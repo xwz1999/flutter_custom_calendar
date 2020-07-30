@@ -66,6 +66,7 @@ class _MonthViewPagerState extends State<MonthViewPager>
         calendarProvider.calendarConfiguration;
 
     return PageView.builder(
+      scrollDirection: Axis.vertical,
       onPageChanged: (position) {
         if (calendarProvider.expandStatus.value == false) {
           return;
