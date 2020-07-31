@@ -1,5 +1,5 @@
 name: flutter_custom_calendar
-description: A calendar control of flutter that supports three selection modes。
+description: A calendar control of flutter that supports three selection modes
 version: 1.0.4+0.5
 homepage: http://www.fgyong.cn
 author: fgyong
@@ -22,7 +22,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter.
 flutter:
-
 # To add assets to your package, add an assets section, like this:
 # assets:
 #   - images/a_dot_burr.jpeg
