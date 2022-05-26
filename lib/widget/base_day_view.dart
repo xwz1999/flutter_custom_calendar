@@ -20,7 +20,7 @@ abstract class BaseCustomDayWidget extends StatelessWidget {
       child: new CustomPaint(
         painter:
             //根据isSelected标志获取对应的item
-            dateModel.isSelected
+            dateModel.isSelected!
                 ? new CustomDayWidgetPainter(dateModel,
                     drawDayWidget: drawSelected)
                 : new CustomDayWidgetPainter(dateModel,
@@ -37,15 +37,15 @@ abstract class BaseCustomDayWidget extends StatelessWidget {
 class CustomDayWidgetPainter extends CustomPainter {
   DateModel dateModel;
 
-  DrawDayWidget drawDayWidget; //普通样式是必须的
+  DrawDayWidget? drawDayWidget; //普通样式是必须的
 
   CustomDayWidgetPainter(this.dateModel, {this.drawDayWidget});
 
-  Paint textPaint;
+  Paint? textPaint;
 
   @override
   void paint(Canvas canvas, Size size) {
-    drawDayWidget(dateModel, canvas, size);
+    drawDayWidget!(dateModel, canvas, size);
   }
 
   @override
@@ -64,7 +64,7 @@ abstract class BaseCombineDayWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return dateModel.isSelected
+    return dateModel.isSelected!
         ? getSelectedWidget(dateModel)
         : getNormalWidget(dateModel);
   }

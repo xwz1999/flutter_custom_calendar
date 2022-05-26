@@ -464,7 +464,7 @@ class LunarUtil {
   ////**
   ///* 保存每年24节气
   ///*/
-  static final Map<int, List<String>> SOLAR_TERMS = new Map();
+  static final Map<int?, List<String?>> SOLAR_TERMS = new Map();
 
   ////**
   ///* 公历节日
@@ -506,7 +506,7 @@ class LunarUtil {
   /**
    * 特殊节日、母亲节和父亲节,感恩节等
    */
-  static final Map<int, List<String>> SPECIAL_FESTIVAL = new Map();
+  static final Map<int?, List<String?>> SPECIAL_FESTIVAL = new Map();
 
   /**
    * 特殊节日的数组
@@ -756,15 +756,15 @@ class LunarUtil {
    * @param calendar calendar
    */
   static void setupLunarCalendar(DateModel dateModel) {
-    int year = dateModel.year;
-    int month = dateModel.month;
+    int? year = dateModel.year;
+    int? month = dateModel.month;
     int day = dateModel.day;
 
 //    dateModel.isWeekend = DateUtil.isWeekend(new DateTime(year, month, day));
 //    dateModel.isLeapYear = DateUtil.isLeapYear(year);
 //    dateModel.isCurrentDay = DateUtil.isCurrentDay(year, month, day);
 
-    List<int> lunar = LunarUtil.solarToLunar(2020, 2, day);
+    List<int?> lunar = LunarUtil.solarToLunar(2020, 2, day);
 
 //    dateModel.lunarYear = (lunar[0]);
 //    dateModel.lunarMonth = (lunar[1]);
@@ -808,8 +808,8 @@ class LunarUtil {
    * @param day   公历日
    * @return [0]农历年 [1]农历月 [2]农历日 [3]是否闰月 0 false : 1 true
    */
-  static List<int> solarToLunar(int year, int month, int day) {
-    List<int> lunarInt = new List(4);
+  static List<int?> solarToLunar(int year, int month, int day) {
+    List<int?> lunarInt = [];
     int index = year - SOLAR[0];
     int data = (year << 9) | (month << 5) | (day);
     int solar11;
@@ -878,15 +878,15 @@ class LunarUtil {
    * @param day   日
    * @return 返回24节气
    */
-  static String getSolarTerm(int year, int month, int day) {
+  static String getSolarTerm(int? year, int month, int day) {
     if (!SOLAR_TERMS.containsKey(year)) {
-      SOLAR_TERMS.addAll({year: SolarTermUtil.getSolarTerms(year)});
+      SOLAR_TERMS.addAll({year: SolarTermUtil.getSolarTerms(year!)});
     }
-    List<String> solarTerm = SOLAR_TERMS[year];
+    List<String?> solarTerm = SOLAR_TERMS[year]!;
     String text = "${year}" + getString(month, day);
     String solar = "";
-    for (String solarTermName in solarTerm) {
-      if (solarTermName.contains(text)) {
+    for (String? solarTermName in solarTerm) {
+      if (solarTermName!.contains(text)) {
         solar = solarTermName.replaceAll(text, "");
         break;
       }
@@ -902,11 +902,11 @@ class LunarUtil {
    * @param leap  1==闰月
    * @return 数字转换为汉字日
    */
-  static String numToChinese(int month, int day, int leap) {
+  static String numToChinese(int? month, int? day, int? leap) {
     if (day == 1) {
       return numToChineseMonth(month, leap);
     }
-    return CalendarConstants.LUNAR_DAY_TEXT[day - 1];
+    return CalendarConstants.LUNAR_DAY_TEXT[day! - 1];
   }
 
   /**
@@ -916,11 +916,11 @@ class LunarUtil {
    * @param leap  1==闰月
    * @return 数字转换为汉字月份
    */
-  static String numToChineseMonth(int month, int leap) {
+  static String numToChineseMonth(int? month, int? leap) {
     if (leap == 1) {
-      return "闰" + CalendarConstants.LUNAR_MONTH_TEXT[month - 1];
+      return "闰" + CalendarConstants.LUNAR_MONTH_TEXT[month! - 1];
     }
-    return CalendarConstants.LUNAR_MONTH_TEXT[month - 1];
+    return CalendarConstants.LUNAR_MONTH_TEXT[month! - 1];
   }
 
   static String getString(int month, int day) {
@@ -955,14 +955,14 @@ class LunarUtil {
    * @param day   农历日
    * @return 返回传统农历节日
    */
-  static String getTraditionFestival(int year, int month, int day) {
+  static String getTraditionFestival(int? year, int? month, int? day) {
     if (month == 12) {
-      int count = daysInLunarMonth(year, month);
+      int count = daysInLunarMonth(year!, month!);
       if (day == count) {
         return TRADITION_FESTIVAL_STR[0]; //除夕
       }
     }
-    String text = getString(month, day);
+    String text = getString(month!, day!);
     String festivalStr = "";
     for (String festival in TRADITION_FESTIVAL_STR) {
       if (festival.contains(text)) {
@@ -997,15 +997,15 @@ class LunarUtil {
    * @param day   day
    * @return 获取西方节日
    */
-  static String getSpecialFestival(int year, int month, int day) {
+  static String getSpecialFestival(int? year, int month, int day) {
     if (!SPECIAL_FESTIVAL.containsKey(year)) {
-      SPECIAL_FESTIVAL.addAll({year: getSpecialFestivals(year)});
+      SPECIAL_FESTIVAL.addAll({year: getSpecialFestivals(year!)});
     }
-    List<String> specialFestivals = SPECIAL_FESTIVAL[year];
+    List<String?> specialFestivals = SPECIAL_FESTIVAL[year]!;
     String text = "$year" + getString(month, day);
     String solar = "";
-    for (String special in specialFestivals) {
-      if (special.contains(text)) {
+    for (String? special in specialFestivals) {
+      if (special!.contains(text)) {
         solar = special.replaceAll(text, "");
         break;
       }
@@ -1020,8 +1020,8 @@ class LunarUtil {
    * @param year 年
    * @return 获取每年的母亲节和父亲节、感恩节
    */
-  static List<String> getSpecialFestivals(int year) {
-    List<String> festivals = new List(3);
+  static List<String?> getSpecialFestivals(int year) {
+    List<String?> festivals = [];
     DateTime dateTime = new DateTime(year, 5, 1);
 
     //母亲节

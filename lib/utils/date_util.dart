@@ -31,7 +31,7 @@ class DateUtil {
    * @param month 月
    * @return 某月的天数
    */
-  static int getMonthDaysCount(int year, int month) {
+  static int getMonthDaysCount(int? year, int? month) {
     int count = 0;
     //判断大月份
     if (month == 1 ||
@@ -51,7 +51,7 @@ class DateUtil {
 
     //判断平年与闰年
     if (month == 2) {
-      if (isLeapYear(year)) {
+      if (isLeapYear(year!)) {
         count = 29;
       } else {
         count = 28;
@@ -63,7 +63,7 @@ class DateUtil {
   /**
    * 是否是今天
    */
-  static bool isCurrentDay(int year, int month, int day) {
+  static bool isCurrentDay(int? year, int? month, int day) {
     DateTime now = DateTime.now();
     return now.year == year && now.month == month && now.day == day;
   }
@@ -110,9 +110,9 @@ class DateUtil {
 
   static List<DateModel> initCalendarForMonthView(
       int year, int month, DateTime currentDate, int weekStart,
-      {DateModel minSelectDate,
-      DateModel maxSelectDate,
-      Map<DateModel, Object> extraDataMap,
+      {DateModel? minSelectDate,
+      DateModel? maxSelectDate,
+      Map<DateModel, Object>? extraDataMap,
       int offset = 0}) {
     print('initCalendarForMonthView start');
     weekStart = DateTime.monday;
@@ -127,7 +127,7 @@ class DateUtil {
         message:
             "initCalendarForMonthView:$year年$month月,有$monthDayCount天,第一天的index为${mPreDiff}");
 
-    List<DateModel> result = new List();
+    List<DateModel> result = [];
 
     int size = 42;
 
@@ -161,15 +161,15 @@ class DateUtil {
       }
 
       //判断是否在范围内
-      if (dateModel.getDateTime().isAfter(minSelectDate.getDateTime()) &&
-          dateModel.getDateTime().isBefore(maxSelectDate.getDateTime())) {
+      if (dateModel.getDateTime().isAfter(minSelectDate!.getDateTime()) &&
+          dateModel.getDateTime().isBefore(maxSelectDate!.getDateTime())) {
         dateModel.isInRange = true;
       } else {
         dateModel.isInRange = false;
       }
       //将自定义额外的数据，存储到相应的model中
       if (extraDataMap?.isNotEmpty == true) {
-        if (extraDataMap.containsKey(dateModel)) {
+        if (extraDataMap!.containsKey(dateModel)) {
           dateModel.extraData = extraDataMap[dateModel];
         } else {
           dateModel.extraData = null;
@@ -206,12 +206,12 @@ class DateUtil {
    * 获取本周的7个item
    */
   static List<DateModel> initCalendarForWeekView(
-      int year, int month, DateTime currentDate, int weekStart,
-      {DateModel minSelectDate,
-      DateModel maxSelectDate,
-      Map<DateModel, Object> extraDataMap,
+      int? year, int? month, DateTime currentDate, int weekStart,
+      {DateModel? minSelectDate,
+      DateModel? maxSelectDate,
+      Map<DateModel, Object>? extraDataMap,
       int offset = 0}) {
-    List<DateModel> items = List();
+    List<DateModel> items = [];
 
     int weekDay = currentDate.weekday + offset;
 
@@ -223,8 +223,8 @@ class DateUtil {
           DateModel.fromDateTime(firstDayOfWeek.add(Duration(days: i)));
 
       //判断是否在范围内
-      if (dateModel.getDateTime().isAfter(minSelectDate.getDateTime()) &&
-          dateModel.getDateTime().isBefore(maxSelectDate.getDateTime())) {
+      if (dateModel.getDateTime().isAfter(minSelectDate!.getDateTime()) &&
+          dateModel.getDateTime().isBefore(maxSelectDate!.getDateTime())) {
         dateModel.isInRange = true;
       } else {
         dateModel.isInRange = false;
@@ -237,7 +237,7 @@ class DateUtil {
 
       //将自定义额外的数据，存储到相应的model中
       if (extraDataMap?.isNotEmpty == true) {
-        if (extraDataMap.containsKey(dateModel)) {
+        if (extraDataMap!.containsKey(dateModel)) {
           dateModel.extraData = extraDataMap[dateModel];
         }
       }

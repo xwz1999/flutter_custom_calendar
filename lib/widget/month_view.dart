@@ -11,16 +11,16 @@ import 'package:provider/provider.dart';
  * 月视图，显示整个月的日子
  */
 class MonthView extends StatefulWidget {
-  final int year;
-  final int month;
-  final int day;
+  final int? year;
+  final int? month;
+  final int? day;
 
-  final CalendarConfiguration configuration;
+  final CalendarConfiguration? configuration;
 
   const MonthView({
-    Key key,
-    @required this.year,
-    @required this.month,
+    Key? key,
+    required this.year,
+    required this.month,
     this.day,
     this.configuration,
   }) : super(key: key);
@@ -31,37 +31,37 @@ class MonthView extends StatefulWidget {
 
 class _MonthViewState extends State<MonthView>
     with AutomaticKeepAliveClientMixin {
-  List<DateModel> items = List();
+  List<DateModel>? items =[];
 
-  int lineCount;
-  Map<DateModel, Object> extraDataMap; //自定义额外的数据
+  int? lineCount;
+  Map<DateModel, Object>? extraDataMap; //自定义额外的数据
 
   @override
   void initState() {
     super.initState();
-    extraDataMap = widget.configuration.extraDataMap;
+    extraDataMap = widget.configuration!.extraDataMap;
     DateModel firstDayOfMonth =
-        DateModel.fromDateTime(DateTime(widget.year, widget.month, 1));
-    if (CacheData.getInstance().monthListCache[firstDayOfMonth]?.isNotEmpty ==
+        DateModel.fromDateTime(DateTime(widget.year!, widget.month!, 1));
+    if (CacheData.getInstance()!.monthListCache[firstDayOfMonth]?.isNotEmpty ==
         true) {
       LogUtil.log(TAG: this.runtimeType, message: "缓存中有数据");
-      items = CacheData.getInstance().monthListCache[firstDayOfMonth];
+      items = CacheData.getInstance()!.monthListCache[firstDayOfMonth];
     } else {
       LogUtil.log(TAG: this.runtimeType, message: "缓存中无数据");
       getItems().then((_) {
-        CacheData.getInstance().monthListCache[firstDayOfMonth] = items;
+        CacheData.getInstance()!.monthListCache[firstDayOfMonth] = items;
       });
     }
 
     lineCount = DateUtil.getMonthViewLineCount(
-        widget.year, widget.month, widget.configuration.offset);
+        widget.year!, widget.month!, widget.configuration!.offset);
 
     //第一帧后,添加监听，generation发生变化后，需要刷新整个日历
-    WidgetsBinding.instance.addPostFrameCallback((callback) {
+    WidgetsBinding.instance!.addPostFrameCallback((callback) {
       Provider.of<CalendarProvider>(context, listen: false)
           .generation
           .addListener(() async {
-        extraDataMap = widget.configuration.extraDataMap;
+        extraDataMap = widget.configuration!.extraDataMap;
         await getItems();
       });
     });
@@ -71,10 +71,10 @@ class _MonthViewState extends State<MonthView>
     items = await compute(initCalendarForMonthView, {
       'year': widget.year,
       'month': widget.month,
-      'minSelectDate': widget.configuration.minSelectDate,
-      'maxSelectDate': widget.configuration.maxSelectDate,
+      'minSelectDate': widget.configuration!.minSelectDate,
+      'maxSelectDate': widget.configuration!.maxSelectDate,
       'extraDataMap': extraDataMap,
-      'offset': widget.configuration.offset
+      'offset': widget.configuration!.offset
     });
     setState(() {});
   }
@@ -96,23 +96,23 @@ class _MonthViewState extends State<MonthView>
     CalendarProvider calendarProvider =
         Provider.of<CalendarProvider>(context, listen: false);
     CalendarConfiguration configuration =
-        calendarProvider.calendarConfiguration;
+        calendarProvider.calendarConfiguration!;
 
     return new GridView.builder(
         addAutomaticKeepAlives: true,
         padding: EdgeInsets.zero,
         physics: const NeverScrollableScrollPhysics(),
         gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 7, mainAxisSpacing: configuration.verticalSpacing),
-        itemCount: items.isEmpty ? 0 : items.length,
+            crossAxisCount: 7, mainAxisSpacing: configuration.verticalSpacing!),
+        itemCount: items!.isEmpty ? 0 : items!.length,
         itemBuilder: (context, index) {
-          DateModel dateModel = items[index];
+          DateModel dateModel = items![index];
           //判断是否被选择
           switch (configuration.selectMode) {
 
             /// 多选
             case CalendarSelectedMode.multiSelect:
-              if (calendarProvider.selectedDateList.contains(dateModel)) {
+              if (calendarProvider.selectedDateList!.contains(dateModel)) {
                 dateModel.isSelected = true;
               } else {
                 dateModel.isSelected = false;
@@ -122,7 +122,7 @@ class _MonthViewState extends State<MonthView>
             /// 选择开始和结束 中间的自动选择
 
             case CalendarSelectedMode.mutltiStartToEndSelect:
-              if (calendarProvider.selectedDateList.contains(dateModel)) {
+              if (calendarProvider.selectedDateList!.contains(dateModel)) {
                 dateModel.isSelected = true;
               } else {
                 dateModel.isSelected = false;
@@ -162,10 +162,10 @@ class _MonthViewState extends State<MonthView>
  * 多选模式，包装item，这样的话，就只需要刷新当前点击的item就行了，不需要刷新整个页面
  */
 class ItemContainer extends StatefulWidget {
-  final DateModel dateModel;
+  final DateModel? dateModel;
 
-  final GestureTapCallback clickCall;
-  const ItemContainer({Key key, this.dateModel, this.clickCall})
+  final GestureTapCallback? clickCall;
+  const ItemContainer({Key? key, this.dateModel, this.clickCall})
       : super(key: key);
 
   @override
@@ -173,17 +173,17 @@ class ItemContainer extends StatefulWidget {
 }
 
 class ItemContainerState extends State<ItemContainer> {
-  DateModel dateModel;
-  CalendarConfiguration configuration;
-  CalendarProvider calendarProvider;
+  DateModel? dateModel;
+  CalendarConfiguration? configuration;
+  late CalendarProvider calendarProvider;
 
-  ValueNotifier<bool> isSelected;
+  ValueNotifier<bool?>? isSelected;
 
   @override
   void initState() {
     super.initState();
     dateModel = widget.dateModel;
-    isSelected = ValueNotifier(dateModel.isSelected);
+    isSelected = ValueNotifier(dateModel!.isSelected);
   }
 
   /**
@@ -198,24 +198,24 @@ class ItemContainerState extends State<ItemContainer> {
     v ??= false;
     if (mounted) {
       setState(() {
-        dateModel.isSelected = v;
+        dateModel!.isSelected = v;
       });
 
       if (widget.clickCall != null) {
-        widget.clickCall();
+        widget.clickCall!();
       }
     }
   }
 
-  void _notifiCationUnCalendarSelect(DateModel element) {
-    if (configuration.unCalendarSelect != null) {
-      configuration.unCalendarSelect(element);
+  void _notifiCationUnCalendarSelect(DateModel? element) {
+    if (configuration!.unCalendarSelect != null) {
+      configuration!.unCalendarSelect!(element);
     }
   }
 
-  void _notifiCationCalendarSelect(DateModel element) {
-    if (configuration.calendarSelect != null) {
-      configuration.calendarSelect(element);
+  void _notifiCationCalendarSelect(DateModel? element) {
+    if (configuration!.calendarSelect != null) {
+      configuration!.calendarSelect!(element);
     }
   }
 
@@ -234,33 +234,33 @@ class ItemContainerState extends State<ItemContainer> {
             message: "GestureDetector onTap: $dateModel}");
 
         //范围外不可点击
-        if (!dateModel.isInRange) {
+        if (!dateModel!.isInRange) {
           //多选回调
-          if (configuration.selectMode == CalendarSelectedMode.multiSelect) {
-            configuration.multiSelectOutOfRange();
+          if (configuration!.selectMode == CalendarSelectedMode.multiSelect) {
+            configuration!.multiSelectOutOfRange();
           }
           return;
         }
 
         calendarProvider.lastClickDateModel = dateModel;
 
-        switch (configuration.selectMode) {
+        switch (configuration!.selectMode) {
           //简单多选
           case CalendarSelectedMode.multiSelect:
-            if (calendarProvider.selectedDateList.contains(dateModel)) {
-              calendarProvider.selectedDateList.remove(dateModel);
+            if (calendarProvider.selectedDateList!.contains(dateModel)) {
+              calendarProvider.selectedDateList!.remove(dateModel);
               _notifiCationUnCalendarSelect(dateModel);
             } else {
               //多选，判断是否超过限制，超过范围
-              if (calendarProvider.selectedDateList.length ==
-                  configuration.maxMultiSelectCount) {
-                if (configuration.multiSelectOutOfSize != null) {
-                  configuration.multiSelectOutOfSize();
+              if (calendarProvider.selectedDateList!.length ==
+                  configuration!.maxMultiSelectCount) {
+                if (configuration!.multiSelectOutOfSize != null) {
+                  configuration!.multiSelectOutOfSize!();
                 }
                 return;
               }
-              dateModel.isSelected = !dateModel.isSelected;
-              calendarProvider.selectedDateList.add(dateModel);
+              dateModel!.isSelected = !dateModel!.isSelected!;
+              calendarProvider.selectedDateList!.add(dateModel);
             }
 
             //多选也可以弄这些单选的代码
@@ -272,11 +272,11 @@ class ItemContainerState extends State<ItemContainer> {
           case CalendarSelectedMode.singleSelect:
 
             /// 加入已经选择了多个 则进行取消操作
-            calendarProvider.selectedDateList.forEach((element) {
-              element.isSelected = false;
+            calendarProvider.selectedDateList!.forEach((element) {
+              element!.isSelected = false;
               _notifiCationUnCalendarSelect(element);
             });
-            calendarProvider.selectedDateList.clear();
+            calendarProvider.selectedDateList!.clear();
 
             //单选需要刷新上一个item
             if (calendarProvider.lastClickItemState != this) {
@@ -284,7 +284,7 @@ class ItemContainerState extends State<ItemContainer> {
               calendarProvider.lastClickItemState = this;
             }
             _notifiCationUnCalendarSelect(calendarProvider.selectDateModel);
-            dateModel.isSelected = true;
+            dateModel!.isSelected = true;
             calendarProvider.selectDateModel = dateModel;
             _notifiCationCalendarSelect(dateModel);
             setState(() {});
@@ -293,41 +293,41 @@ class ItemContainerState extends State<ItemContainer> {
 
           /// 选择范围
           case CalendarSelectedMode.mutltiStartToEndSelect:
-            if (calendarProvider.selectedDateList.length == 0) {
-              calendarProvider.selectedDateList.add(dateModel);
-            } else if (calendarProvider.selectedDateList.length == 1) {
-              DateModel d2 = calendarProvider.selectedDateList.first;
-              if (calendarProvider.selectedDateList.contains(dateModel)) {
+            if (calendarProvider.selectedDateList!.length == 0) {
+              calendarProvider.selectedDateList!.add(dateModel);
+            } else if (calendarProvider.selectedDateList!.length == 1) {
+              DateModel? d2 = calendarProvider.selectedDateList!.first;
+              if (calendarProvider.selectedDateList!.contains(dateModel)) {
                 /// 选择同一个第二次则进行取消
-                dateModel.isSelected = false;
+                dateModel!.isSelected = false;
                 _notifiCationUnCalendarSelect(dateModel);
 
                 setState(() {});
                 return;
               }
               DateTime t1, t2;
-              if (d2.getDateTime().isAfter(dateModel.getDateTime())) {
+              if (d2!.getDateTime().isAfter(dateModel!.getDateTime())) {
                 t2 = d2.getDateTime();
-                t1 = dateModel.getDateTime();
+                t1 = dateModel!.getDateTime();
               } else {
                 t1 = d2.getDateTime();
-                t2 = dateModel.getDateTime();
+                t2 = dateModel!.getDateTime();
               }
               for (; t1.isBefore(t2);) {
-                calendarProvider.selectedDateList
+                calendarProvider.selectedDateList!
                     .add(DateModel.fromDateTime(t1));
                 t1 = t1.add(Duration(days: 1));
               }
-              calendarProvider.selectedDateList.add(DateModel.fromDateTime(t1));
+              calendarProvider.selectedDateList!.add(DateModel.fromDateTime(t1));
             } else {
               /// 加入已经选择了多个 则进行取消操作
-              calendarProvider.selectedDateList.forEach((element) {
-                element.isSelected = false;
+              calendarProvider.selectedDateList!.forEach((element) {
+                element!.isSelected = false;
                 _notifiCationUnCalendarSelect(element);
               });
 
               /// 清空删除的 数组
-              calendarProvider.selectedDateList.clear();
+              calendarProvider.selectedDateList!.clear();
               setState(() {});
             }
 
@@ -335,16 +335,16 @@ class ItemContainerState extends State<ItemContainer> {
         }
 
         /// 所有数组操作完了 进行通知分发
-        if (configuration.calendarSelect != null &&
-            calendarProvider.selectedDateList.length > 0) {
-          calendarProvider.selectedDateList.forEach((element) {
+        if (configuration!.calendarSelect != null &&
+            calendarProvider.selectedDateList!.length > 0) {
+          calendarProvider.selectedDateList!.forEach((element) {
             _notifiCationCalendarSelect(element);
           });
         }
 
-        refreshItem(!this.dateModel.isSelected);
+        refreshItem(!this.dateModel!.isSelected!);
       },
-      child: configuration.dayWidgetBuilder(dateModel),
+      child: configuration!.dayWidgetBuilder!(dateModel!),
     );
   }
 

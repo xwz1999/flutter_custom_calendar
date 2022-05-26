@@ -33,7 +33,7 @@ class OnlyOnePointerRecognizer extends OneSequenceGestureRecognizer {
 }
 
 class OnlyOnePointerRecognizerWidget extends StatelessWidget {
-  final Widget child;
+  final Widget? child;
 
   OnlyOnePointerRecognizerWidget({this.child});
 

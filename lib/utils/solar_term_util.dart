@@ -247,8 +247,8 @@ class SolarTermUtil {
    * @return 公历转儒略日, UTC=1表示原日期是UTC
    */
   static double toJulian(Time time, bool UTC) {
-    double y = time.year; // 取出年月
-    double m = time.month;
+    double y = time.year!; // 取出年月
+    double m = time.month!;
     double n = 0;
 
     if (m <= 2) {
@@ -256,7 +256,7 @@ class SolarTermUtil {
       y--;
     }
 
-    if (time.year * 372 + time.month * 31 + time.day >= 588829) {
+    if (time.year! * 372 + time.month! * 31 + time.day >= 588829) {
 // 判断是否为格里高利历日1582*372+10*31+15
       n = doubleFloor(y / 100);
       n = 2 - n + doubleFloor(n / 4); // 加百年闰
@@ -293,13 +293,13 @@ class SolarTermUtil {
     }
     A += 1524; // 向前移4年零2个月
     time.year = doubleFloor((A - 122.1) / 365.25); // 年
-    D = A - doubleFloor(365.25 * time.year); // 去除整年日数后余下日数
+    D = A - doubleFloor(365.25 * time.year!); // 去除整年日数后余下日数
     time.month = doubleFloor(D / 30.6001); // 月数
-    time.day = D - doubleFloor(time.month * 30.6001); // 去除整月日数后余下日数
+    time.day = D - doubleFloor(time.month! * 30.6001); // 去除整月日数后余下日数
     time.year -= 4716;
     time.month--;
-    if (time.month > 12) time.month -= 12;
-    if (time.month <= 2) time.year++;
+    if (time.month! > 12) time.month -= 12;
+    if (time.month! <= 2) time.year++;
 // 日的小数转为时分秒
     F *= 24;
     time.hour = doubleFloor(F);
@@ -318,14 +318,14 @@ class SolarTermUtil {
    * @param jd jd
    * @param zb zb
    */
-  static void precession(double jd, List<double> zb) {
+  static void precession(double jd, List<double?> zb) {
     int i;
     double t = 1, v = 0, t1 = jd / 365250;
     for (i = 1; i < 8; i++) {
       t *= t1;
       v += H_C_ANGLE_TABLE[i] * t;
     }
-    zb[0] = rad2mrad(zb[0] + (v + 2.9965 * t1) / SECOND_PER_RAD);
+    zb[0] = rad2mrad(zb[0]! + (v + 2.9965 * t1) / SECOND_PER_RAD);
   }
 
   /**
@@ -2001,7 +2001,7 @@ class SolarTermUtil {
    */
   static List<double> earCal(double jd) {
     EnnT = jd / 365250;
-    List<double> llr = new List(3);
+    List<double> llr = [];
     double t1 = EnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1, t5 = t4 * t1;
     llr[0] = Enn(E10) +
         Enn(E11) * t1 +
@@ -2042,16 +2042,16 @@ class SolarTermUtil {
    * @param julian 儒略历
    * @return return 地心黄道坐标
    */
-  static List<double> moonCoord(double julian) {
+  static List<double?> moonCoord(double julian) {
     MnnT = julian / 36525;
     double t1 = MnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1;
-    List<double> llr = new List(3);
+    List<double?> llr = [];
     llr[0] = (Mnn(M10) + Mnn(M11) * t1 + Mnn(M12) * t2) / SECOND_PER_RAD;
     llr[1] = (Mnn(M20) + Mnn(M21) * t1) / SECOND_PER_RAD;
     llr[2] = (Mnn(M30) + Mnn(M31) * t1) * 0.999999949827;
     llr[0] =
-        llr[0] + M1n[0] + M1n[1] * t1 + M1n[2] * t2 + M1n[3] * t3 + M1n[4] * t4;
-    llr[0] = rad2mrad(llr[0]); // 地心Date黄道原点坐标(不含岁差)
+        llr[0]! + M1n[0] + M1n[1] * t1 + M1n[2] * t2 + M1n[3] * t3 + M1n[4] * t4;
+    llr[0] = rad2mrad(llr[0]!); // 地心Date黄道原点坐标(不含岁差)
     precession(julian, llr); // 补岁差
     return llr;
   }
@@ -2074,8 +2074,8 @@ class SolarTermUtil {
       sun[0] += d.Lon; // 补黄经章动
       return rad2mrad(angle - sun[0]);
     }
-    List<double> moon = moonCoord(time); // 日月角差与章动无关
-    return rad2mrad(angle - (moon[0] - sun[0]));
+    List<double?> moon = moonCoord(time); // 日月角差与章动无关
+    return rad2mrad(angle - (moon[0]! - sun[0]));
   }
 
   /**
@@ -2123,10 +2123,10 @@ class SolarTermUtil {
    * @return 24节气
    */
 
-  static List<String> getSolarTerms(int year) {
-    List<String> solarTerms = new List(24);
-    List<String> preOffset = getSolarTermsPreOffset(year - 1);
-    List<String> nextOffset = getSolarTermsNextOffset(year - 1);
+  static List<String?> getSolarTerms(int year) {
+    List<String?> solarTerms = [];
+    List<String?> preOffset = getSolarTermsPreOffset(year - 1);
+    List<String?> nextOffset = getSolarTermsNextOffset(year - 1);
     System.arraycopy(preOffset, 0, solarTerms, 0, preOffset.length);
     System.arraycopy(nextOffset, 0, solarTerms, 22, nextOffset.length);
 
@@ -2147,8 +2147,8 @@ class SolarTermUtil {
    * @param year 要获得2018年24节气需要传入2017年
    * @return 返回 立春 雨水 惊蛰
    */
-  static List<String> getSolarTermsPreOffset(int year) {
-    List<String> solarTerms = new List(3);
+  static List<String?> getSolarTermsPreOffset(int year) {
+    List<String?> solarTerms = [];
     double jd = 365.2422 * (year - 2000), q;
     for (int i = 21; i < 24; i++) {
       q = getTimeFromAngle(jd + i * 15.2, i * 15.toDouble(), 0);
@@ -2165,8 +2165,8 @@ class SolarTermUtil {
    * @param year 要获得2018年24节气需要传入2017年
    * @return 返回 小寒大寒
    */
-  static List<String> getSolarTermsNextOffset(int year) {
-    List<String> solarTerms = new List(2);
+  static List<String?> getSolarTermsNextOffset(int year) {
+    List<String?> solarTerms = [];
     double jd = 365.2422 * (year - 2000), q;
     for (int i = 19; i < 21; i++) {
       q = getTimeFromAngle(jd + i * 15.2, i * 15.toDouble(), 0);
@@ -2185,21 +2185,21 @@ class Nutation {
   /**
    * 章动角
    */
-  double Lon;
+  late double Lon;
 
   /**
    * 交角
    */
-  double Obl;
+  late double Obl;
 }
 
 class Time {
-  double year;
-  double month;
-  double day;
-  double hour;
-  double minute;
-  double second;
+  late double year;
+  late double month;
+  late double day;
+  late double hour;
+  late double minute;
+  late double second;
 
   String toString() {
     return doubleToString(year) + doubleToString(month) + doubleToString(day);
