@@ -247,8 +247,8 @@ class SolarTermUtil {
    * @return 公历转儒略日, UTC=1表示原日期是UTC
    */
   static double toJulian(Time time, bool UTC) {
-    double y = time.year!; // 取出年月
-    double m = time.month!;
+    double y = time.year; // 取出年月
+    double m = time.month;
     double n = 0;
 
     if (m <= 2) {
@@ -256,7 +256,7 @@ class SolarTermUtil {
       y--;
     }
 
-    if (time.year! * 372 + time.month! * 31 + time.day >= 588829) {
+    if (time.year * 372 + time.month * 31 + time.day >= 588829) {
 // 判断是否为格里高利历日1582*372+10*31+15
       n = doubleFloor(y / 100);
       n = 2 - n + doubleFloor(n / 4); // 加百年闰
@@ -293,13 +293,13 @@ class SolarTermUtil {
     }
     A += 1524; // 向前移4年零2个月
     time.year = doubleFloor((A - 122.1) / 365.25); // 年
-    D = A - doubleFloor(365.25 * time.year!); // 去除整年日数后余下日数
+    D = A - doubleFloor(365.25 * time.year); // 去除整年日数后余下日数
     time.month = doubleFloor(D / 30.6001); // 月数
-    time.day = D - doubleFloor(time.month! * 30.6001); // 去除整月日数后余下日数
+    time.day = D - doubleFloor(time.month * 30.6001); // 去除整月日数后余下日数
     time.year -= 4716;
     time.month--;
-    if (time.month! > 12) time.month -= 12;
-    if (time.month! <= 2) time.year++;
+    if (time.month > 12) time.month -= 12;
+    if (time.month <= 2) time.year++;
 // 日的小数转为时分秒
     F *= 24;
     time.hour = doubleFloor(F);

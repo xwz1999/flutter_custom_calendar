@@ -98,6 +98,10 @@ class _WeekViewState extends State<WeekView> {
                 dateModel.isSelected = false;
               }
               break;
+
+            case null:
+
+              break;
           }
 
           return ItemContainer(

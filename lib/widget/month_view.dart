@@ -137,6 +137,11 @@ class _MonthViewState extends State<MonthView>
                 dateModel.isSelected = false;
               }
               break;
+          /// 单选
+            case null:
+
+              break;
+
           }
 
           return ItemContainer(
@@ -195,7 +200,7 @@ class ItemContainerState extends State<ItemContainer> {
         The following assertion was thrown while handling a gesture:
         setState() called after dispose()
      */
-    v ??= false;
+    // v ??= false;
     if (mounted) {
       setState(() {
         dateModel!.isSelected = v;
@@ -330,6 +335,10 @@ class ItemContainerState extends State<ItemContainer> {
               calendarProvider.selectedDateList!.clear();
               setState(() {});
             }
+
+            break;
+
+          case null:
 
             break;
         }
