@@ -1021,7 +1021,7 @@ class LunarUtil {
    * @return 获取每年的母亲节和父亲节、感恩节
    */
   static List<String?> getSpecialFestivals(int year) {
-    List<String?> festivals = [];
+    List<String?> festivals = ['','',''];
     DateTime dateTime = new DateTime(year, 5, 1);
 
     //母亲节
