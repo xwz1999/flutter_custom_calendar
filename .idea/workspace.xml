@@ -10,9 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="18463f0e-cf10-4ee2-975b-376476396e12" name="Default Changelist" comment="Default Changelist">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/model/date_model.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/model/date_model.dart" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/utils/lunar_util.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/lunar_util.dart" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/utils/solar_term_util.dart" beforeDir="false" afterPath="$PROJECT_DIR$/lib/utils/solar_term_util.dart" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

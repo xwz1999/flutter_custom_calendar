@@ -2001,7 +2001,7 @@ class SolarTermUtil {
    */
   static List<double> earCal(double jd) {
     EnnT = jd / 365250;
-    List<double> llr = [];
+    List<double> llr = [0,0,0];
     double t1 = EnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1, t5 = t4 * t1;
     llr[0] = Enn(E10) +
         Enn(E11) * t1 +
@@ -2045,7 +2045,7 @@ class SolarTermUtil {
   static List<double?> moonCoord(double julian) {
     MnnT = julian / 36525;
     double t1 = MnnT, t2 = t1 * t1, t3 = t2 * t1, t4 = t3 * t1;
-    List<double?> llr = [];
+    List<double?> llr = [0,0,0];
     llr[0] = (Mnn(M10) + Mnn(M11) * t1 + Mnn(M12) * t2) / SECOND_PER_RAD;
     llr[1] = (Mnn(M20) + Mnn(M21) * t1) / SECOND_PER_RAD;
     llr[2] = (Mnn(M30) + Mnn(M31) * t1) * 0.999999949827;
@@ -2125,6 +2125,9 @@ class SolarTermUtil {
 
   static List<String?> getSolarTerms(int year) {
     List<String?> solarTerms = [];
+    for(int i=0;i<24;i++){
+      solarTerms.add('');
+    }
     List<String?> preOffset = getSolarTermsPreOffset(year - 1);
     List<String?> nextOffset = getSolarTermsNextOffset(year - 1);
     System.arraycopy(preOffset, 0, solarTerms, 0, preOffset.length);
@@ -2148,7 +2151,7 @@ class SolarTermUtil {
    * @return 返回 立春 雨水 惊蛰
    */
   static List<String?> getSolarTermsPreOffset(int year) {
-    List<String?> solarTerms = [];
+    List<String?> solarTerms = ['','',''];
     double jd = 365.2422 * (year - 2000), q;
     for (int i = 21; i < 24; i++) {
       q = getTimeFromAngle(jd + i * 15.2, i * 15.toDouble(), 0);
@@ -2166,7 +2169,7 @@ class SolarTermUtil {
    * @return 返回 小寒大寒
    */
   static List<String?> getSolarTermsNextOffset(int year) {
-    List<String?> solarTerms = [];
+    List<String?> solarTerms = ['',''];
     double jd = 365.2422 * (year - 2000), q;
     for (int i = 19; i < 21; i++) {
       q = getTimeFromAngle(jd + i * 15.2, i * 15.toDouble(), 0);
