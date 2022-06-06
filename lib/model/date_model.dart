@@ -9,7 +9,7 @@ class DateModel {
   int? month;
   int day = 1;
 
-  List<int?> lunar = [];
+  List<int> lunar = [];
 
 //  List<int> get lunar {
 //    if (lunar?.isNotEmpty == false) {
@@ -86,7 +86,7 @@ class DateModel {
       ..year = dateTime.year
       ..month = dateTime.month
       ..day = dateTime.day;
-    List<int?> lunar =
+    List<int> lunar =
         LunarUtil.solarToLunar(dateModel.year!, dateModel.month!, dateModel.day);
     dateModel.lunar = lunar;
 

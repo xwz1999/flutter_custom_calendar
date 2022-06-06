@@ -764,7 +764,7 @@ class LunarUtil {
 //    dateModel.isLeapYear = DateUtil.isLeapYear(year);
 //    dateModel.isCurrentDay = DateUtil.isCurrentDay(year, month, day);
 
-    List<int?> lunar = LunarUtil.solarToLunar(2020, 2, day);
+    List<int> lunar = LunarUtil.solarToLunar(2020, 2, day);
 
 //    dateModel.lunarYear = (lunar[0]);
 //    dateModel.lunarMonth = (lunar[1]);
@@ -808,8 +808,8 @@ class LunarUtil {
    * @param day   公历日
    * @return [0]农历年 [1]农历月 [2]农历日 [3]是否闰月 0 false : 1 true
    */
-  static List<int?> solarToLunar(int year, int month, int day) {
-    List<int?> lunarInt = [];
+  static List<int> solarToLunar(int year, int month, int day) {
+    List<int> lunarInt = [0,0,0,0];
     int index = year - SOLAR[0];
     int data = (year << 9) | (month << 5) | (day);
     int solar11;
@@ -861,12 +861,12 @@ class LunarUtil {
 
   static int solarToInt(int y, int m, int d) {
     m = (m + 9) % 12;
-    y = y - (m / 10).toInt();
+    y = y - m ~/ 10;
     return (365 * y +
-        (y / 4).toInt() -
-        (y / 100).toInt() +
-        (y / 400).toInt() +
-        ((m * 306 + 5) / 10).toInt() +
+        y ~/ 4 -
+        y ~/ 100 +
+        y ~/ 400 +
+        (m * 306 + 5) ~/ 10 +
         (d - 1));
   }
 
