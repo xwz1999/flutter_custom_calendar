@@ -22,10 +22,10 @@ class DateModel {
   String get lunarString {
     if (solarTerm.isNotEmpty) {
       return solarTerm;
-    } else if (gregorianFestival.isNotEmpty) {
-      return gregorianFestival;
     } else if (traditionFestival.isNotEmpty) {
       return traditionFestival;
+    } else if (gregorianFestival.isNotEmpty) {
+      return gregorianFestival;
     } else {
       return LunarUtil.numToChinese(lunar[1], lunar[2], lunar[3]);
     }
